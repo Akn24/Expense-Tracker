@@ -8,11 +8,11 @@ class CustomTheme {
       fontFamily: 'Montserrat',
       textTheme: const TextTheme(
         bodyText1: TextStyle(
-          fontSize: 16,
+          fontSize: 18,
         ),
 
         bodyText2: TextStyle(
-          fontSize: 14,
+          fontSize: 16,
         ),
       )
 
