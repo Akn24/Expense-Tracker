@@ -1,5 +1,7 @@
 import 'package:expense_tracker/data/homedummy.dart';
 import 'package:expense_tracker/investment_display_page/investment_display_page.dart';
+import 'package:expense_tracker/services/services.dart';
+import 'package:expense_tracker/transactions/transaction_homepage.dart';
 import 'package:expense_tracker/widgets/homeappbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,63 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    if(_selectedIndex == 0) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+    }
+    else if(_selectedIndex == 1){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TransactionHomePage()));
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchStockList();
+    fetchMutualList();
+  }
+
+  var stockList = [];
+  var mutualList = [];
+  num sumStock = 0;
+  num mutualPrice = 0;
+
+  void fetchStockList() async{
+    stockList = await Network().getStockList();
+    print(stockList);
+    
+    for(int i=0;i<stockList.length;i++){
+      sumStock+=(stockList[i]["units"]*stockList[i]["price"])!;
+    }
+    print(sumStock.toString());
+    setState(() {
+      sumStock;
+      stockList;
+    });
+  }
+
+  void fetchMutualList() async{
+    mutualList = await Network().getMutualList();
+    print(mutualList);
+    
+    for(var i=0;i<mutualList.length;i++){
+      mutualPrice+=(mutualList[i]["units"]*mutualList[i]["price"])!;
+    }
+    print(mutualPrice.toString());
+    setState(() {
+      mutualList;
+      mutualPrice;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -20,6 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.grey[100],
           elevation: 5,
+          selectedItemColor: Colors.purple,
+          unselectedItemColor: Colors.grey,
+          currentIndex: _selectedIndex,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: const <BottomNavigationBarItem>[
@@ -45,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               label: "",
             ),
           ],
+          onTap: _onItemTapped,
         ),
         appBar: AppBar(
           elevation: 0,
@@ -54,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: HomeBody(size: size),
+          child: HomeBody(size: size, stock: stockList, mutual: mutualList, sumStock: sumStock, mutualPrice: mutualPrice),
         ),
       ),
     );
@@ -62,9 +125,17 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class HomeBody extends StatelessWidget {
+  final List<dynamic> stock;
+  final List<dynamic> mutual;
+  final num sumStock;
+  final num mutualPrice;
   const HomeBody({
     Key? key,
     required this.size,
+    required this.stock,
+    required this.mutual,
+    required this.sumStock,
+    required this.mutualPrice,
   }) : super(key: key);
 
   final Size size;
@@ -122,7 +193,7 @@ class HomeBody extends StatelessWidget {
                   width: size.width * 0.475,
                   child: GestureDetector(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => InvestmentDisplayPage(title: investmentCards[index],)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => InvestmentDisplayPage(title: investmentCards[index], stock: stock, mutual: mutual)));
                     },
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -133,8 +204,12 @@ class HomeBody extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          index==0 ? Text(
+                            "\$$sumStock",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ) : 
                           Text(
-                            "\$12.3K",
+                            "\$$mutualPrice",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           Text(
