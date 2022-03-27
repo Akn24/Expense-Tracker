@@ -34,8 +34,54 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   }
 
   List<dynamic> res = [];
+  num income = 0;
+  num expense = 0;
   void fetchTransactions() async{
     res = await Network().getTransactions();
+    print(res);
+
+    for(int i=0;i<res.length;i++){
+      if(res[i]["type"]=="credit"){
+        income+=res[i]["amount"];
+      }
+      else{
+        expense+=res[i]["amount"];
+      }
+    }
+    if(mounted){
+      setState(() {
+        res;
+      });
+    }
+  }
+
+  Widget SelectIcon(String c){
+    if(c=="Shopping"){
+      return Icon(
+        Icons.shop,
+      );  
+    }
+    else if(c=="Grocery"){
+      return Icon(
+          Icons.local_grocery_store_outlined,
+        );
+    }
+    else if(c=="Travel"){
+      return Icon(
+          Icons.flight,
+        );
+    }
+    else if(c=="Grocery"){
+      return Icon(
+          Icons.food_bank,
+        );
+    }
+    else{
+      return Icon(
+        Icons.hvac_outlined,
+      );
+    }
+    
   }
 
   @override
@@ -98,7 +144,12 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-         onPressed: () {},
+         onPressed: () async{
+           var res = await Network().getSms();
+           setState(() {
+             fetchTransactions();
+           });
+         },
           child: const Icon(Icons.sms),
         ),
         body: SingleChildScrollView(
@@ -121,6 +172,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children : [
                           Text(
                             "Income",
@@ -129,7 +181,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                             ),
                           ),
                           Text(
-                            "\$12.3K",
+                            "\$$income",
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(
                               color: Colors.white,
                             ),
@@ -140,6 +192,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                         color: Colors.white,
                       ),
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children : [
                           Text(
                             "Expenses",
@@ -148,7 +201,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                             ),
                           ),
                           Text(
-                            "\$12.3K",
+                            "\$$expense",
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(
                               color: Colors.white,
                             ),
@@ -160,11 +213,14 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                 ),
               ),
                 ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
                   itemCount: res.length,
                   itemBuilder: (BuildContext context, int index){
                     return ListTile(
-                      title: res[index]["price"],
-                      trailing: res[index]["price"],
+                      leading: SelectIcon(res[index]["category"]),
+                      title: Text("${res[index]["title"]}"),
+                      trailing: res[index]['type']=="debit"? Text('- \$'+res[index]["amount"].toString()) : Text('+ \$'+res[index]["amount"].toString()),
                     );
                   }
                 )

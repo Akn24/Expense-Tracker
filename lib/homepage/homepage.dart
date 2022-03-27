@@ -51,10 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
       sumStock+=(stockList[i]["units"]*stockList[i]["price"])!;
     }
     print(sumStock.toString());
-    setState(() {
+    
+    if(mounted){
+      setState(() {
       sumStock;
       stockList;
     });
+    }
+    
   }
 
   void fetchMutualList() async{
@@ -65,10 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
       mutualPrice+=(mutualList[i]["units"]*mutualList[i]["price"])!;
     }
     print(mutualPrice.toString());
-    setState(() {
+    
+    if(mounted){
+      setState(() {
       mutualList;
       mutualPrice;
     });
+    }
+    
   }
 
   @override
@@ -205,11 +213,11 @@ class HomeBody extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           index==0 ? Text(
-                            "\$$sumStock",
+                            "\$${sumStock.toStringAsFixed(2)}",
                             style: Theme.of(context).textTheme.bodyText1,
                           ) : 
                           Text(
-                            "\$$mutualPrice",
+                            "\$${mutualPrice.toStringAsFixed(2)}",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                           Text(
@@ -250,11 +258,11 @@ class HomeBody extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     title: Text(
-                      "Food",
+                      categories[index]["name"],
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
-                    subtitle: const LinearProgressIndicator(
-                      value: 0.6,
+                    subtitle: LinearProgressIndicator(
+                      value: categories[index]["value"].toDouble(),
                     ),
                   );
                 }
