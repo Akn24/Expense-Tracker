@@ -158,63 +158,64 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
             padding: const EdgeInsets.all(10),
             child: Column(
               children : [
-                Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.black,
-                ),
-                height: 150,
-                width: size.width,
-                child: Card(
-                  color: Colors.black,
-                  elevation: 5,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children : [
-                          Text(
-                            "Income",
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                              color: Colors.white,
+                  Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black,
+                  ),
+                  height: 150,
+                  width: size.width,
+                  child: Card(
+                    color: Colors.black,
+                    elevation: 5,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children : [
+                            Text(
+                              "Income",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "\$$income",
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              color: Colors.white,
+                            Text(
+                              "\$$income",
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const VerticalDivider(
-                        color: Colors.white,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children : [
-                          Text(
-                            "Expenses",
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                              color: Colors.white,
+                          ],
+                        ),
+                        const VerticalDivider(
+                          color: Colors.white,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children : [
+                            Text(
+                              "Expenses",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "\$$expense",
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              color: Colors.white,
+                            Text(
+                              "\$$expense",
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
                 ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: res.length,
                   itemBuilder: (BuildContext context, int index){
                     return ListTile(
